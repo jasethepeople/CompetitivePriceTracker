@@ -16,7 +16,7 @@ const PORT = 5000;
 
 async function startServer() {
   const vite = await createServer({
-    server: { middlewareMode: true, allowedHosts: 'all' },
+    server: { middlewareMode: true, allowedHosts: true },
     appType: 'spa',
     root: path.resolve('./client'),
     resolve: {
