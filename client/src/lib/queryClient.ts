@@ -1,16 +1,6 @@
 import { QueryClient } from '@tanstack/react-query';
 
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      staleTime: 1000 * 60 * 5, // 5 minutes
-      refetchOnWindowFocus: false,
-    },
-  },
-});
-
-// Default fetcher function
-const apiRequest = async (endpoint: string, options?: RequestInit): Promise<any> => {
+export async function apiRequest(endpoint: string, options?: RequestInit): Promise<any> {
   const response = await fetch(endpoint, {
     headers: {
       'Content-Type': 'application/json',
@@ -24,6 +14,17 @@ const apiRequest = async (endpoint: string, options?: RequestInit): Promise<any>
   }
 
   return response.json();
-};
+}
 
-export { apiRequest };
+export const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      queryFn: async ({ queryKey }) => {
+        const [url] = queryKey as string[];
+        return apiRequest(url);
+      },
+      staleTime: 1000 * 60 * 5,
+      refetchOnWindowFocus: false,
+    },
+  },
+});
